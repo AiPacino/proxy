@@ -1,0 +1,41 @@
+; File generated automatically from ./dlls/webservices/webservices.spec; do not edit!
+
+LIBRARY webservices.dll
+
+EXPORTS
+  WsAlloc @12
+  WsCreateError @25
+  WsCreateHeap @27
+  WsCreateReader @32
+  WsCreateWriter @37
+  WsCreateXmlBuffer @38
+  WsFillReader @47
+  WsFreeError @52
+  WsFreeHeap @53
+  WsFreeReader @57
+  WsFreeWriter @61
+  WsGetErrorProperty @65
+  WsGetErrorString @66
+  WsGetHeapProperty @71
+  WsGetReaderNode @83
+  WsGetReaderProperty @85
+  WsGetWriterProperty @91
+  WsGetXmlAttribute @92
+  WsMoveReader @96
+  WsReadEndElement @112
+  WsReadNode @119
+  WsReadStartElement @122
+  WsReadToStartElement @123
+  WsReadType @124
+  WsSetErrorProperty @149
+  WsSetInput @153
+  WsSetInputToBuffer @154
+  WsSetOutput @157
+  WsSetOutputToBuffer @158
+  WsWriteEndAttribute @174
+  WsWriteEndElement @176
+  WsWriteEndStartElement @177
+  WsWriteStartAttribute @184
+  WsWriteStartElement @186
+  WsWriteText @187
+  WsXmlStringEquals @193

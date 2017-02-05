@@ -1,0 +1,8 @@
+; File generated automatically from ./dlls/sfc/sfc.spec; do not edit!
+
+LIBRARY sfc.dll
+
+EXPORTS
+  SfcGetNextProtectedFile=sfc_os.SfcGetNextProtectedFile @10
+  SfcIsFileProtected=sfc_os.SfcIsFileProtected @11
+  SfcIsKeyProtected=sfc_os.SfcIsKeyProtected @12

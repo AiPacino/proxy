@@ -1,0 +1,13 @@
+; File generated automatically from ./dlls/winealsa.drv/winealsa.drv.spec; do not edit!
+
+LIBRARY winealsa.drv
+
+EXPORTS
+  DriverProc=ALSA_DriverProc @1 PRIVATE
+  midMessage=ALSA_midMessage @2 PRIVATE
+  modMessage=ALSA_modMessage @3 PRIVATE
+  GetPriority=AUDDRV_GetPriority @4 PRIVATE
+  GetEndpointIDs=AUDDRV_GetEndpointIDs @5 PRIVATE
+  GetAudioEndpoint=AUDDRV_GetAudioEndpoint @6 PRIVATE
+  GetAudioSessionManager=AUDDRV_GetAudioSessionManager @7 PRIVATE
+  GetPropValue=AUDDRV_GetPropValue @8 PRIVATE
