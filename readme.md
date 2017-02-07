@@ -30,9 +30,6 @@ todolist
 安排一下项目结构
 更改dagobah设置位置
 
-
-
-
 ###进度安排
 
 搜集google的结果。

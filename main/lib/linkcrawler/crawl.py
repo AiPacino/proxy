@@ -63,13 +63,13 @@ def write_log(error, url):
     ferror = open("log.txt", "a")
 
     """写入错误信息error 加上空格"""
-    ferror.write(error+" ")
+    ferror.write("'"+error+"' '")
 
     """写入现在的时间"""
-    ferror.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+" ")
+    ferror.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"' '")
     
     """写入出错的url地址"""
-    ferror.write(url+'\n')
+    ferror.write(url+"'\n")
     
     """关闭文件"""
     ferror.close()
@@ -104,6 +104,7 @@ def check_link(url, focuskey):
     else:
         """正常响应，获取内容，放入get_all_link(),传入内容为url，可以爬取的名称，抓取的内容"""
         page = response.text
+        write_log('succeed', url)
         get_all_links(page, url, focuskey) # url is base_url
 
 # 定义一个Crawlurl爬取的类
@@ -124,7 +125,7 @@ class CrawlUrl(threading.Thread):
             if url not in crawledurl:
                 check_link(url, self.focuskey)
             self.crawl_queue.task_done()
-            print "left {}, has {}".format(crawl_queue.qsize(), len(crawledurl))
+            ### print "left {}, has {}".format(crawl_queue.qsize(), len(crawledurl))
 
 def main(netloc,focuskey):
     for i in range(10):
