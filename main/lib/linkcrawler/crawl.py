@@ -5,13 +5,15 @@ import socket
 import Queue
 import threading
 import sys
-import datetime
 import requests
 import random
 import time
+
+sys.path.append("lib");
 from urlfilter import url_is_similar, url_is_repeat, url_contain_custom_focus
 socket.setdefaulttimeout(30)
-
+from log import write_log
+from source import webcontentext
 
 html = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
 gzip = 'gzip, deflate, sdch'
@@ -56,29 +58,11 @@ def get_all_links(page, baseurl, focuskey = ()):
         else:
             crawl_queue.put(baseurl[:-1]+url)
 
-def write_log(error, url):
-    """把错误信息写入日志"""
-
-    """获取log日志文件的句柄"""
-    ferror = open("log.txt", "a")
-
-    """写入错误信息error 加上空格"""
-    ferror.write("'"+error+"' '")
-
-    """写入现在的时间"""
-    ferror.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"' '")
-    
-    """写入出错的url地址"""
-    ferror.write(url+"'\n")
-    
-    """关闭文件"""
-    ferror.close()
-
 def random_agent(user_agent):
     """随机选择浏览器user_agent"""
     return random.choice(user_agent)
 
-def check_link(url, focuskey):
+def check_link(url, focuskey, log, sourcelog):
     """分析链接是否异常 有异常记录到log 没异常获取页面链接"""
 
     """在已经抓取过的里面添加url"""
@@ -90,30 +74,33 @@ def check_link(url, focuskey):
                 'Accept-Language':'chinese,en-US,en','Cache-Control':'max-age=0','Connection':'keep-alive',
                 'User-Agent':random_agent(user_agent)},timeout = 30)
     except requests.exceptions.ConnectionError:
-        write_log('ConnectionError', url)
+        write_log(log, 'ConnectionError', url)
     except requests.exceptions.HTTPError:
-        write_log('HTTPError', url)
+        write_log(log, 'HTTPError', url)
     except (requests.exceptions.Timeout, socket.timeout):
-        write_log("Timeout", url)
+        write_log(log, "Timeout", url)
     except requests.exceptions.TooManyRedirects:
-        write_log('TooManyRedirects', url)
+        write_log(log, 'TooManyRedirects', url)
     except requests.exceptions.InvalidURL:
-        write_log('InvalidURL', url)
+        write_log(log, 'InvalidURL', url)
     except:
-        write_log('UnknownError', url)
+        write_log(log, 'UnknownError', url)
     else:
         """正常响应，获取内容，放入get_all_link(),传入内容为url，可以爬取的名称，抓取的内容"""
         page = response.text
-        write_log('succeed', url)
+        webcontentext(sourcelog, page, url)
+        write_log(log, 'succeed', url)
         get_all_links(page, url, focuskey) # url is base_url
 
 # 定义一个Crawlurl爬取的类
 class CrawlUrl(threading.Thread):
-    def __init__(self, crawl_queue, focuskey):
+    def __init__(self, crawl_queue, focuskey, log, sourcelog):
         # 这里初始化多进程
         threading.Thread.__init__(self)
         self.crawl_queue = crawl_queue
         self.focuskey = focuskey
+        self.log = log
+        self.sourcelog = sourcelog
 
     def run(self):
         while True:
@@ -123,13 +110,13 @@ class CrawlUrl(threading.Thread):
             # 如果这个url我们还没有验证过
             # 我们就去验证这个网页的各种属性
             if url not in crawledurl:
-                check_link(url, self.focuskey)
+                check_link(url, self.focuskey, self.log, self.sourcelog)
             self.crawl_queue.task_done()
             ### print "left {}, has {}".format(crawl_queue.qsize(), len(crawledurl))
 
-def main(netloc,focuskey):
+def main(netloc, focuskey, log, sourcelog):
     for i in range(10):
-        crawlthread = CrawlUrl(crawl_queue, focuskey)
+        crawlthread = CrawlUrl(crawl_queue, focuskey, log, sourcelog)
         
         # 设置此线程是否被主线程守护回收。默认False不回收，需要在 start 方法前调用；
         # 设为True相当于像主线程中注册守护，主线程结束时会将其一并回收
