@@ -40,3 +40,9 @@ MagicGoogle
 安装方式
 pip install MagicGoogle
 
+安装redis
+$ sudo apt-get install -y python-software-properties
+$ sudo add-apt-repository -y ppa:rwky/redis
+$ sudo apt-get update
+$ sudo apt-get install -y redis-server
+
